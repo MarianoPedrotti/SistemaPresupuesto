@@ -36,6 +36,7 @@ namespace SistemaPresupuesto.DataAccess
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("IDCliente")),
                                 Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                                Telefono = reader[reader.GetOrdinal("Telefono")].ToString(),
                                 Email = reader.GetString(reader.GetOrdinal("Email"))
                             };
                             clientes.Add(cliente);
@@ -80,6 +81,7 @@ namespace SistemaPresupuesto.DataAccess
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("IDCliente")),
                                 Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                                Telefono = reader[reader.GetOrdinal("Telefono")].ToString(),
                                 Email = reader.GetString(reader.GetOrdinal("Email"))
                             };
                         }
@@ -97,6 +99,7 @@ namespace SistemaPresupuesto.DataAccess
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+                    cmd.Parameters.AddWithValue("@Telefono", cliente.Telefono);
                     cmd.Parameters.AddWithValue("@Email", cliente.Email);
                     conn.Open();
                     cmd.ExecuteNonQuery();
@@ -113,6 +116,7 @@ namespace SistemaPresupuesto.DataAccess
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@IDCliente", cliente.Id);
                     cmd.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+                    cmd.Parameters.AddWithValue("@Telefono", cliente.Telefono);
                     cmd.Parameters.AddWithValue("@Email", cliente.Email);
                     conn.Open();
                     cmd.ExecuteNonQuery();

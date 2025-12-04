@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SistemaPresupuesto.BusniessLogic
 {
-    internal class PresupuestoService
+    public class PresupuestoService
     {
     }
 }
