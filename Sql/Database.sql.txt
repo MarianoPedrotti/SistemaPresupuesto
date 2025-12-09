@@ -1,0 +1,391 @@
+﻿                                                Crear tablas
+USE SistemaPresupuesto;
+
+CREATE TABLE Clientes (
+    IdCliente INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(50) NOT NULL,
+    Telefono BIGINT NOT NULL
+);
+
+CREATE TABLE Productos (
+    IdProducto INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(50) NOT NULL,
+    Precio DECIMAL(10,2) NOT NULL,
+    Stock INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE Presupuestos (
+    IdPresupuesto INT IDENTITY(1,1) PRIMARY KEY,
+    Fecha DATE NOT NULL,
+    Total DECIMAL(10,2),
+    IdCliente INT NOT NULL,
+    FOREIGN KEY (IdCliente) REFERENCES Clientes(IdCliente)
+);
+
+CREATE TABLE PresupuestoDetalle (
+    IdPresupuestoDetalle INT IDENTITY(1,1) PRIMARY KEY,
+    IdPresupuesto INT NOT NULL,
+    IdProducto INT NOT NULL,
+    Cantidad INT NOT NULL,
+    PrecioUnitario DECIMAL(10,2) NOT NULL,
+    SubTotal AS (Cantidad * PrecioUnitario) PERSISTED,
+    FOREIGN KEY (IdPresupuesto) REFERENCES Presupuestos(IdPresupuesto),
+    FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto)
+);
+
+                                        Crear procedimientos almacenados 
+
+use SistemaPresupuesto
+go --Obtener todos los productos 
+create procedure sp_getAllProductos
+as
+begin 
+	select IdProducto, Nombre, Precio, Stock
+	from Productos;
+end
+
+
+go -- Insertar un producto
+create procedure SP_Insertproducto
+@Nombre nvarchar (50),
+@Precio decimal (10,2),
+@Stock int
+as
+begin 
+	insert into Productos (Nombre,Precio,Stock)
+	values(@Nombre, @Precio, @Stock);
+end 
+
+
+
+go -- actualizar producto
+create procedure sp_UpdateProducto
+@IdProducto int,
+@Nombre nvarchar(50),
+@Precio decimal (10,2),
+@Stock int
+as 
+begin
+	update Productos
+	set Nombre = @Nombre,
+		Precio = @Precio,
+		Stock = @Stock
+	where IdProducto = @IdProducto;
+end 
+
+
+go -- Eliminar producto 
+create procedure sp_DeleteProducto
+@IdProducto int
+as 
+begin 
+	delete from Productos
+	where IdProducto = @IdProducto;
+end
+go
+
+go
+create procedure sp_GetProductoById
+@IdProducto int
+as
+begin
+	select IdProducto,Nombre, Precio, Stock
+	from Productos
+	where IdProducto = @IdProducto;
+end
+go
+--Agregar cliente
+create procedure sp_AgregarCliente
+@Nombre nvarchar(50),
+@Email nvarchar(50),
+@Telefono nvarchar(20)
+as 
+begin 
+	insert into Clientes (Nombre,Email,Telefono)
+	values(@Nombre,@Email, @Telefono);
+end;
+go
+
+---actualizar cliente-
+create procedure sp_ActualizarCliente
+@IDCliente int,
+@Nombre nvarchar(50),
+@Email nvarchar (50),
+@Telefono nvarchar (50)
+as
+begin
+	update Clientes
+	set Nombre = @Nombre,
+		Email = @Email,
+		Telefono = @Telefono
+	where IDCliente = @IDCliente;
+end;
+go
+--Elimina-r cliente
+create procedure sp_EliminarCliente
+@IDCliente int
+as 
+begin
+	delete from Clientes where IDCliente = @IDCliente;
+end;
+go
+--ObtenerClientes
+create procedure sp_ListarClientes
+as 
+begin
+	select IDCliente, Nombre, Email, Telefono
+	from Clientes;
+end;
+go
+--Obtener Clientes ByID
+create procedure sp_ObtenerClienteById
+@IDCliente int
+as
+begin
+	select IDCliente, Nombre, Email, Telefono
+	from CLientes where IDCliente = @IDCliente;
+END;
+GO
+
+create procedure SP_Presupuesto_Listar
+as
+	begin
+		select
+			IdPresupuesto,
+			Fecha,
+			Total,
+			IdCliente,
+			Confirmado
+  FROM Presupuestos;
+  end
+
+go
+create procedure SP_Presupuesto_Obtener
+@Id int
+as
+begin 
+	select
+			IdPresupuesto,
+			Fecha,
+			Total,
+			IdCliente,
+			Confirmado
+  FROM Presupuestos
+  where IdPresupuesto = @Id;
+  end
+go
+create procedure SP_Presupuesto_Agregar
+@IdCliente int,
+  @Fecha DATETIME,
+    @Total DECIMAL(18,2),
+    @NuevoId INT OUTPUT
+AS
+BEGIN
+    INSERT INTO Presupuestos (IdCliente, Fecha, Total)
+    VALUES (@IdCliente, @Fecha, @Total);
+
+    SET @NuevoId = SCOPE_IDENTITY();
+END
+
+
+
+
+go
+create procedure SP_Presupuesto_Actualizar
+	@Id INT,
+    @IdCliente INT,
+    @Fecha DATETIME,
+    @Total DECIMAL(18,2)
+AS
+BEGIN
+    UPDATE Presupuestos
+    SET 
+        IdCliente = @IdCliente,
+        Fecha = @Fecha,
+        Total = @Total
+    WHERE IdPresupuesto = @Id;
+END
+
+
+
+
+
+go
+create procedure SP_Presupuesto_Eliminar
+@Id INT
+AS
+BEGIN
+    DELETE FROM Presupuestos
+    WHERE IdPresupuesto = @Id;
+END
+
+
+
+go 
+create procedure  SP_Presupuesto_Confirmar
+  @Id INT
+AS
+BEGIN
+    UPDATE Presupuestos
+    SET Confirmado = 1
+    WHERE IdPresupuesto = @Id;
+END
+-- ************************************************************
+-- 1. SP_DetallePresupuesto_Insertar
+-- ************************************************************
+USE [SistemaPresupuesto]
+GO
+
+IF OBJECT_ID('[dbo].[SP_DetallePresupuesto_Insertar]') IS NOT NULL
+    DROP PROCEDURE [dbo].[SP_DetallePresupuesto_Insertar]
+GO
+
+CREATE PROCEDURE [dbo].[SP_DetallePresupuesto_Insertar]
+    @IdPresupuesto INT,
+    @IdProducto INT,
+    @Cantidad INT,
+    @PrecioUnitario DECIMAL(18,2)
+AS
+BEGIN
+    INSERT INTO PresupuestoDetalle (IdPresupuesto, IdProducto, Cantidad, PrecioUnitario)
+    VALUES (@IdPresupuesto, @IdProducto, @Cantidad, @PrecioUnitario );
+END
+GO
+
+
+-- ************************************************************
+-- 2. SP_DetallePresupuesto_Actualizar
+-- ************************************************************
+USE [SistemaPresupuesto]
+GO
+
+IF OBJECT_ID('[dbo].[SP_DetallePresupuesto_Actualizar]') IS NOT NULL
+    DROP PROCEDURE [dbo].[SP_DetallePresupuesto_Actualizar]
+GO
+
+CREATE PROCEDURE [dbo].[SP_DetallePresupuesto_Actualizar]
+    @Id INT, -- Corresponde a IdPresupuestoDetalle
+    @IdProducto INT,
+    @Cantidad INT,
+    @PrecioUnitario DECIMAL(18,2)
+AS
+BEGIN
+    UPDATE PresupuestoDetalle
+    SET
+        IdProducto = @IdProducto,
+        Cantidad = @Cantidad,
+        PrecioUnitario = @PrecioUnitario
+    WHERE IdPresupuestoDetalle = @Id;
+END
+GO
+
+
+-- ************************************************************
+-- 3. SP_DetallePresupuesto_Eliminar
+-- ************************************************************
+USE [SistemaPresupuesto]
+GO
+
+IF OBJECT_ID('[dbo].[SP_DetallePresupuesto_Eliminar]') IS NOT NULL
+    DROP PROCEDURE [dbo].[SP_DetallePresupuesto_Eliminar]
+GO
+
+CREATE PROCEDURE [dbo].[SP_DetallePresupuesto_Eliminar]
+    @Id INT -- Corresponde a IdPresupuestoDetalle
+AS
+BEGIN
+    DELETE FROM PresupuestoDetalle
+    WHERE IdPresupuestoDetalle = @Id;
+END
+GO
+
+
+-- ************************************************************
+-- 4. SP_DetallePresupuesto_ListarPorPresupuesto
+-- ************************************************************
+USE [SistemaPresupuesto]
+GO
+
+IF OBJECT_ID('[dbo].[SP_DetallePresupuesto_ListarPorPresupuesto]') IS NOT NULL
+    DROP PROCEDURE [dbo].[SP_DetallePresupuesto_ListarPorPresupuesto]
+GO
+
+CREATE PROCEDURE [dbo].[SP_DetallePresupuesto_ListarPorPresupuesto]
+    @IdPresupuesto INT
+AS
+BEGIN
+    SELECT IdPresupuestoDetalle, IdPresupuesto, IdProducto, Cantidad, PrecioUnitario, SubTotal
+    FROM PresupuestoDetalle
+    WHERE IdPresupuesto = @IdPresupuesto;
+END
+GO
+
+
+-- ************************************************************
+-- 5. SP_DetallePresupuesto_Obtener
+-- ************************************************************
+USE [SistemaPresupuesto]
+GO
+
+IF OBJECT_ID('[dbo].[SP_DetallePresupuesto_Obtener]') IS NOT NULL
+    DROP PROCEDURE [dbo].[SP_DetallePresupuesto_Obtener]
+GO
+
+CREATE PROCEDURE [dbo].[SP_DetallePresupuesto_Obtener]
+    @Id INT -- Corresponde a IdPresupuestoDetalle
+AS
+BEGIN
+    SELECT IdPresupuestoDetalle, IdPresupuesto, IdProducto, Cantidad, PrecioUnitario, SubTotal
+    FROM PresupuestoDetalle
+    WHERE IdPresupuestoDetalle = @Id;
+END
+GO
+
+
+                Procedimientos almacenados creados para futuras versiones
+
+create procedure SP_RegistrarMovimientoStock
+	@ProductoId int,
+	@Cantidad Decimal (18,2),
+	@TipoMOvimiento varchar (15),
+	@Origen varchar(100) = null,
+	@Usuario varchar(100) = null,
+	@IdPresupuesto int = null -- queda Null si no viene de presupuesto
+
+as
+begin
+	set nocount on; -- evita que sql server muestre cuantas filas fueron afectadas con el objetivo de mejorar el rendimiento, evitar trafico innesesario entre servidor y cliente y prebiene problemas cuando una aplicacion esta esperando un solo resultado--
+	--En el caso de que sea egeso, controla stock disponible--
+	if (@TipoMOvimiento = 'Egreso')
+	begin 
+		declare @StockActual Decimal(18,2) = (
+			Select isnull (sum( 
+				case when TipoMOvimiento = 'Ingreso' Then Cantidad Else Cantidad end
+			),0)
+			from MovimientoStock
+			where ProductoId = @ProductoId
+			);
+		if (@StockActual < @Cantidad)
+		begin 
+		raiserror ('Stock insuficiente para realizar el egreso.',16,1);
+		return;
+		end 
+	    end
+	--En el caso que sea ingreso--
+	insert  into MovimientoStock (ProductoId, IdPresupuesto, Fecha, Cantidad, TipoMovimiento, Origen, Usuario)
+	values (@ProductoId, @IdPresupuesto, GETDATE(), @Cantidad, @TipoMOvimiento, @Origen, @Usuario);
+	end 
+	go
+
+    create view VW_StockAtual
+as 
+select 
+	P.IdProducto as ProductoId,
+	P.Nombre,
+	ISNULL(sum(case when M.TipoMovimiento = 'Ingreso' then M.Cantidad else -M.Cantidad end), 0) as StockDisponible
+	from Productos P 
+	left join MovimientoStock M on P.IdProducto = M.ProductoId
+	group by P.IdProducto, P.Nombre
+	go
+

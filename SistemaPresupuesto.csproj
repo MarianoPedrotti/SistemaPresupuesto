@@ -150,5 +150,19 @@
   <ItemGroup>
     <Folder Include="BusniessLogic\ObserverStock\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sql\Database.sql.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.sql.txt</LastGenOutput>
+    </Content>
+    <Content Include="Sql\Database.sql.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Database.sql.tt</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
