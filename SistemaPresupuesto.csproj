@@ -52,6 +52,8 @@
     <Compile Include="BusniessLogic\PresupuestoService.cs" />
     <Compile Include="BusniessLogic\ProductoService.cs" />
     <Compile Include="DataAccess\ClienteRepository.cs" />
+    <Compile Include="DataAccess\DetallePresupuestoRepository.cs" />
+    <Compile Include="DataAccess\PresupuestoRepository.cs" />
     <Compile Include="DataAccess\ProductoRepository.cs" />
     <Compile Include="Domain\Cliente.cs" />
     <Compile Include="Domain\DetallePresupuesto.cs" />
@@ -105,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\FormPresupuesto.resx">
       <DependentUpon>FormPresupuesto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentacion\FormProducto.resx">
+      <DependentUpon>FormProducto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\FromHome.resx">
       <DependentUpon>FromHome.cs</DependentUpon>

@@ -42,22 +42,7 @@ namespace SistemaPresupuesto.DataAccess
                             clientes.Add(cliente);
                         }
                     }
-                    //Sin usar stored procedure
-                    //string query = "SELECT IdCliente, Nombre, Apellido, Email From Clientes";
-                    //using (SqlDataReader reader = cmd.ExecuteReader()) 
-                    //{
-                    //    while (reader.Read()) 
-                    //    {
-                    //        var cliente = new Cliente
-                    //        {
-                    //            Id = reader.GetInt32(0),
-                    //            Nombre = reader.GetString(1),
-                    //            Apellido = reader.GetString(2),
-                    //            Email = reader.GetString(3)
-                    //        };
-                    //        clientes.Add(cliente);
-                    //    }
-                    //}
+
                 }
             }
             return clientes;

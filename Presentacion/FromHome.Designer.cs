@@ -71,28 +71,28 @@
             // clienteToolStripMenuItem
             // 
             this.clienteToolStripMenuItem.Name = "clienteToolStripMenuItem";
-            this.clienteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clienteToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.clienteToolStripMenuItem.Text = "Cliente";
             this.clienteToolStripMenuItem.Click += new System.EventHandler(this.clientesToolStripMenuItem_Click);
             // 
             // productoToolStripMenuItem
             // 
             this.productoToolStripMenuItem.Name = "productoToolStripMenuItem";
-            this.productoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.productoToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.productoToolStripMenuItem.Text = "Producto";
             this.productoToolStripMenuItem.Click += new System.EventHandler(this.productosToolStripMenuItem_Click);
             // 
             // presupuestoToolStripMenuItem
             // 
             this.presupuestoToolStripMenuItem.Name = "presupuestoToolStripMenuItem";
-            this.presupuestoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.presupuestoToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.presupuestoToolStripMenuItem.Text = "Presupuesto";
             this.presupuestoToolStripMenuItem.Click += new System.EventHandler(this.presupuestoToolStripMenuItem_Click);
             // 
             // detallePresupuestoToolStripMenuItem
             // 
             this.detallePresupuestoToolStripMenuItem.Name = "detallePresupuestoToolStripMenuItem";
-            this.detallePresupuestoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.detallePresupuestoToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.detallePresupuestoToolStripMenuItem.Text = "Detalle Presupuesto";
             this.detallePresupuestoToolStripMenuItem.Click += new System.EventHandler(this.detallePresupuestosToolStripMenuItem_Click);
             // 
