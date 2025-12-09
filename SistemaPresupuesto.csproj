@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,7 +57,6 @@
     <Compile Include="DataAccess\ProductoRepository.cs" />
     <Compile Include="Domain\Cliente.cs" />
     <Compile Include="Domain\DetallePresupuesto.cs" />
-    <Compile Include="Domain\MovimientoStock.cs" />
     <Compile Include="Domain\Presupuesto.cs" />
     <Compile Include="Domain\Producto.cs" />
     <Compile Include="Form1.cs">
@@ -89,10 +89,30 @@
     <Compile Include="Presentacion\FormProducto.Designer.cs">
       <DependentUpon>FormProducto.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentacion\FromHome.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentacion\FromHome.Designer.cs">
+      <DependentUpon>FromHome.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SistemaPresupuestoDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SistemaPresupuestoDataSet.xsd</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Presentacion\FormCliente.resx">
+      <DependentUpon>FormCliente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\FormPresupuesto.resx">
       <DependentUpon>FormPresupuesto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentacion\FormProducto.resx">
+      <DependentUpon>FormProducto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentacion\FromHome.resx">
+      <DependentUpon>FromHome.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -112,12 +132,37 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SistemaPresupuestoDataSet.xsc">
+      <DependentUpon>SistemaPresupuestoDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SistemaPresupuestoDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>SistemaPresupuestoDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="SistemaPresupuestoDataSet.xss">
+      <DependentUpon>SistemaPresupuestoDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BusniessLogic\ObserverStock\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sql\Database.sql.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.sql.txt</LastGenOutput>
+    </Content>
+    <Content Include="Sql\Database.sql.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Database.sql.tt</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
