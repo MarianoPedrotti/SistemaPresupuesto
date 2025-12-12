@@ -1,73 +1,157 @@
-﻿using System.Windows.Forms;
-using SistemaPresupuesto.Presentacion; // Asume que FormCliente está aquí
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace SistemaPresupuesto.Presentacion
 {
     public partial class FormHome : Form
     {
+        private Panel panelMain;   // Panel central
+        private Panel sidebar;     // Sidebar lateral
+
         public FormHome()
         {
             InitializeComponent();
+
+            this.BackColor = Color.FromArgb(245, 245, 248);
+            this.Font = new Font("Segoe UI", 10);
+
+            // Ocultar menú viejo
+            menuStrip1.Visible = false;
+
+            CrearHeader();
+            CrearSidebar();
+            CrearPanelPrincipal();
         }
 
-        /// <summary>
-        /// Método general para abrir un formulario como hijo del MDI.
-        /// (Asume que FormHome es un contenedor MDI, si no lo es, se abrirá como ventana normal).
-        /// </summary>
+        // -------------------------------------------------------------
+        //   HEADER (barra superior)
+        // -------------------------------------------------------------
+        private void CrearHeader()
+        {
+            Panel panelHeader = new Panel();
+            panelHeader.Dock = DockStyle.Top;
+            panelHeader.Height = 50;
+            panelHeader.BackColor = Color.FromArgb(30, 144, 255);
+            this.Controls.Add(panelHeader);
+
+            Label lblTitulo = new Label();
+            lblTitulo.Text = "Sistema de Presupuesto";
+            lblTitulo.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+            lblTitulo.ForeColor = Color.White;
+            lblTitulo.AutoSize = true;
+            lblTitulo.Location = new Point(20, 12);
+            panelHeader.Controls.Add(lblTitulo);
+
+            Button btnCerrar = new Button();
+            btnCerrar.Text = "X";
+            btnCerrar.ForeColor = Color.White;
+            btnCerrar.BackColor = Color.FromArgb(220, 20, 60);
+            btnCerrar.FlatStyle = FlatStyle.Flat;
+            btnCerrar.FlatAppearance.BorderSize = 0;
+            btnCerrar.Size = new Size(40, 40);
+            btnCerrar.Location = new Point(this.Width - 50, 5);
+            btnCerrar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnCerrar.Click += (s, e) => this.Close();
+            panelHeader.Controls.Add(btnCerrar);
+        }
+
+        // -------------------------------------------------------------
+        //   SIDEBAR (barra lateral)
+        // -------------------------------------------------------------
+        private void CrearSidebar()
+        {
+            sidebar = new Panel();
+            sidebar.Width = 200;
+            sidebar.Dock = DockStyle.Left;
+            sidebar.BackColor = Color.FromArgb(45, 45, 48);
+            this.Controls.Add(sidebar);
+
+            // Crear botones
+            Button btnClientes = CrearBoton("Clientes");
+            Button btnProductos = CrearBoton("Productos");
+            Button btnPresupuesto = CrearBoton("Presupuestos");
+            Button btnDetalle = CrearBoton("Detalle Presupuesto");
+
+            // Asignar eventos
+            btnClientes.Click += (s, e) => clientesToolStripMenuItem_Click(s, e);
+            btnProductos.Click += (s, e) => productosToolStripMenuItem_Click(s, e);
+            btnPresupuesto.Click += (s, e) => presupuestoToolStripMenuItem_Click(s, e);
+            btnDetalle.Click += (s, e) => detallePresupuestosToolStripMenuItem_Click(s, e);
+
+            // Agregar al sidebar (orden invertido para apilar)
+            sidebar.Controls.Add(btnDetalle);
+            sidebar.Controls.Add(btnPresupuesto);
+            sidebar.Controls.Add(btnProductos);
+            sidebar.Controls.Add(btnClientes);
+        }
+
+        // Creador genérico de botones
+        private Button CrearBoton(string texto)
+        {
+            return new Button()
+            {
+                Text = texto,
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance = { BorderSize = 0 },
+                Dock = DockStyle.Top,
+                Height = 50,
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(45, 45, 48),
+                Font = new Font("Segoe UI", 12, FontStyle.Regular),
+                Padding = new Padding(20, 0, 0, 0)
+            };
+        }
+
+        // -------------------------------------------------------------
+        //   PANEL CENTRAL DONDE SE CARGAN LOS FORMULARIOS HIJOS
+        // -------------------------------------------------------------
+        private void CrearPanelPrincipal()
+        {
+            panelMain = new Panel();
+            panelMain.Dock = DockStyle.Fill;
+            panelMain.BackColor = Color.White;
+            this.Controls.Add(panelMain);
+            panelMain.BringToFront();
+        }
+
+        // -------------------------------------------------------------
+        //   ABRIR FORMULARIOS DENTRO DEL PANEL CENTRAL
+        // -------------------------------------------------------------
         private void AbrirFormulario(Form form)
         {
-            // Opcional: Si quieres que FormHome sea un contenedor MDI (como un escritorio)
-            // Descomenta la línea: this.IsMdiContainer = true; en el diseñador
-            // if (this.IsMdiContainer)
-            // {
-            //     form.MdiParent = this;
-            // }
+            panelMain.Controls.Clear();
 
-            // Verifica si el formulario ya está abierto
-            foreach (Form openForm in Application.OpenForms)
-            {
-                // Busca por el tipo del formulario, ej: FormCliente
-                if (openForm.GetType() == form.GetType() && openForm.Name == form.Name)
-                {
-                    openForm.BringToFront(); // Lo trae al frente
-                    return;
-                }
-            }
+            form.TopLevel = false;
+            form.FormBorderStyle = FormBorderStyle.None;
+            form.Dock = DockStyle.Fill;
 
-            form.Show(); // Abre el nuevo formulario
+            panelMain.Controls.Add(form);
+            form.BringToFront();
+            form.Show();
         }
 
-
-        // --- Implementación de los Clics del Menú ---
-
+        // -------------------------------------------------------------
+        //   EVENTOS DEL MENÚ ORIGINAL (SE SIGUEN USANDO)
+        // -------------------------------------------------------------
         private void clientesToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            // Crea una instancia del Formulario de Clientes
-            FormCliente formCliente = new FormCliente();
-
-            // Llama al método para abrirlo
-            AbrirFormulario(formCliente);
+            AbrirFormulario(new FormCliente());
         }
 
         private void productosToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            // Abre FormProducto
-            FormProducto formProducto = new FormProducto();
-            AbrirFormulario(formProducto);
+            AbrirFormulario(new FormProducto());
         }
 
         private void presupuestoToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            // Abre FormPresupuesto
-            FormPresupuesto formPresupuesto = new FormPresupuesto();
-            AbrirFormulario(formPresupuesto);
+            AbrirFormulario(new FormPresupuesto());
         }
 
         private void detallePresupuestosToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            // Abre FormDetallePresupuesto
-            FormDetallePresupuesto formDetalle = new FormDetallePresupuesto();
-            AbrirFormulario(formDetalle);
+            AbrirFormulario(new FormDetallePresupuesto());
         }
     }
 }

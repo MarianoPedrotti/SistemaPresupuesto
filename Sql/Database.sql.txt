@@ -389,3 +389,4 @@ select
 	group by P.IdProducto, P.Nombre
 	go
 
+:
